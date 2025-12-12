@@ -1,0 +1,1 @@
+{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"k8s_cluster_register","arguments":{"cluster_id":"my-cluster","kubeconfig_path":"C:\\Users\\linh.do\\Downloads\\pirago-k3s"}}}
