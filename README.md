@@ -8,7 +8,8 @@ The Most Comprehensive Kubernetes MCP Server – Manage your entire Kubernetes e
 
 ---
 ## 📺 Live Demo
-![K8s Assistant in action](https://github.com/user-attachments/assets/56846b94-7ab7-4a81-9771-9cc67b200c3d) 
+![K8s Assistant in action]
+https://github.com/user-attachments/assets/56846b94-7ab7-4a81-9771-9cc67b200c3d 
 *AI automatically validating YAML, deploying to 'test' namespace, and opening a tunnel.*
 
 ✨ **Comprehensive Coverage (65+ Tools!)**
