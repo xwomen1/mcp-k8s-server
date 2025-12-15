@@ -9,6 +9,9 @@ require k8s.io/client-go v0.34.3
 require (
 	github.com/fxamacker/cbor/v2 v2.9.0 // indirect
 	github.com/google/jsonschema-go v0.3.0 // indirect
+	github.com/gorilla/websocket v1.5.4-0.20250319132907-e064f32e3674 // indirect
+	github.com/moby/spdystream v0.5.0 // indirect
+	github.com/mxk/go-flowrate v0.0.0-20140419014527-cca7078d478f // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/stretchr/testify v1.11.1 // indirect
 	github.com/x448/float16 v0.8.4 // indirect

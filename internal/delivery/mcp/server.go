@@ -43,6 +43,42 @@ func NewMCPServer(
 }
 
 func (m *MCPServer) setupTools() {
+
+	mcp.AddTool(m.server, &mcp.Tool{
+		Name:        "k8s_apply_yaml",
+		Description: "Apply K8s resources. Use 'dry_run: true' to validate YAML without creating resources.",
+		InputSchema: map[string]any{
+			"type": "object",
+			"properties": map[string]any{
+				"cluster_id":    map[string]any{"type": "string"},
+				"yaml_body":     map[string]any{"type": "string"},
+				"field_manager": map[string]any{"type": "string"},
+				"dry_run": map[string]any{
+					"type":        "boolean",
+					"description": "If true, only validate the object without persisting it.",
+				},
+			},
+			"required": []string{"cluster_id", "yaml_body"},
+		},
+	}, m.handleApplyYAML)
+
+	// 2. Tool Port Forward
+	mcp.AddTool(m.server, &mcp.Tool{
+		Name:        "k8s_port_forward",
+		Description: "Manage port forwarding. To STOP, call this tool with pod_name and cluster_id.",
+		InputSchema: map[string]any{
+			"type": "object",
+			"properties": map[string]any{
+				"cluster_id":  map[string]any{"type": "string"},
+				"namespace":   map[string]any{"type": "string"},
+				"pod_name":    map[string]any{"type": "string"},
+				"remote_port": map[string]any{"type": "number"},
+				"local_port":  map[string]any{"type": "number"},
+				"action":      map[string]any{"type": "string", "enum": []string{"start", "stop"}, "default": "start"},
+			},
+			"required": []string{"cluster_id", "namespace", "pod_name"},
+		},
+	}, m.handlePortForward)
 	//  tool k8s_webhook_mutating_get
 	mcp.AddTool(m.server, &mcp.Tool{
 		Name:        "k8s_webhook_mutating_get",
@@ -1609,10 +1645,12 @@ func (m *MCPServer) handleGetPodLogs(ctx context.Context, req *mcp.CallToolReque
 
 	return &mcp.CallToolResult{
 		Content: []mcp.Content{
-			&mcp.TextContent{Text: fmt.Sprintf("📋 Logs from pod '%s' in namespace '%s' (last %d lines):\n\n%s",
-				podName, namespace, tailLines, logs)},
+			&mcp.TextContent{
+				Text: logs,
+			},
 		},
-	}, logs, nil
+		IsError: false,
+	}, nil, nil
 }
 
 func (m *MCPServer) handleScaleDeployment(ctx context.Context, req *mcp.CallToolRequest, args map[string]any) (*mcp.CallToolResult, any, error) {

@@ -30,34 +30,35 @@ Our project provides a **complete set of Kubernetes management tools**, includin
 
 ## 📋 Features Overview
 
-### 🔧 Core Workload Operations
-* **Pods**: List, get logs, execute commands
-* **Deployments**: Scale, get info, restart
-* **StatefulSets**: Scale, restart, delete
-* **DaemonSets**: Restart, get pods, delete
-* **Jobs & CronJobs**: Create, delete, trigger, suspend, get logs
+### 🚀 Advanced Deployment & Automation
+* **Universal Apply**: Apply **ANY** Kubernetes resource (Namespace, Pod, Deployment, etc.) using a single tool.
+* **Server-Side Apply (SSA)**: Optimized resource management using `ApplyPatch` for safe, conflict-free updates.
+* **Dry-Run Validation**: Validate YAML manifests against the K8s API without creating resources (`dry_run: true`).
+* **Smart Field Management**: Track changes with custom `field_manager` identifiers (e.g., `ai-provisioner`).
 
-### ⚙️ Configuration Management
-* **ConfigMaps**: Create, read, update, delete
-* **Secrets**: Secure management (keys only display)
-* **ResourceQuotas**: List and get detailed quotas
-* **LimitRanges**: Enforce resource limits per namespace
-
-### 🌐 Networking
-* **Services**: List, get details, delete
-* **Ingress**: Full ingress controller management
+### 🌐 Networking & Connectivity
+* **Real-time Port Forwarding**: Establish secure tunnels from `localhost` to any Pod port instantly.
+* **Session Management**: Full control to **Start** and **Stop/Terminate** active port-forwarding tunnels via AI.
+* **Service Discovery**: List and manage Services and Ingress controllers across all namespaces.
 
 ### 📊 Monitoring & Debugging
-* **Events**: List with filtering by involved object
-* **Logs**: Real-time pod and job logs
-* **Metrics**: Node resource utilization
-* **HPA**: Autoscaling status and metrics
+* **Intelligent Logging**: Real-time log streaming with **Automated Log Zipping** for large data exports.
+* **Resource Metrics**: Monitor Node and Pod resource utilization (CPU, Memory).
+* **Event Filtering**: Track cluster-wide events with advanced filtering by object type and namespace.
 
-### 🛡️ Security & RBAC
-* **Webhooks**: Mutating and Validating webhook configurations 
-* **ClusterRoles**: List all cluster-wide RBAC policies
-* **Node Taints**: Advanced scheduling control
+### 🔧 Core Workload Operations
+* **Workload Management**: Full CRUD operations for Pods, Deployments, StatefulSets, and DaemonSets.
+* **Batch Processing**: Trigger, suspend, and retrieve logs from Jobs and CronJobs.
+* **Scaling**: Dynamic scaling of replicas for Deployments and StatefulSets.
 
+### ⚙️ Configuration & Security
+* **Config & Secrets**: Secure management of ConfigMaps and Secrets.
+* **RBAC & Policies**: List and audit ClusterRoles, ResourceQuotas, and LimitRanges.
+* **Advanced Scheduling**: Manage Node Taints and Webhook configurations (Mutating/Validating).
+
+### 🖥️ Multi-Cluster Management
+* **Dynamic Registration**: Register multiple clusters on-the-fly using local Kubeconfig paths or raw data.
+* **Context Switching**: Seamlessly interact with different cluster IDs in a single session.
 ---
 
 ## 🚀 Getting Started

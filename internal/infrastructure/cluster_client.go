@@ -1,8 +1,10 @@
 package infrastructure
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"io"
 	"sync"
 	"time"
 
@@ -25,9 +27,31 @@ type ClusterClient interface {
 }
 
 type ClusterManager struct {
-	clusters map[domain.ClusterID]*ClusterContext
-	mu       sync.RWMutex
-	logger   Logger
+	clusters      map[domain.ClusterID]*ClusterContext
+	mu            sync.RWMutex
+	logger        Logger
+	activeTunnels map[string]chan struct{}
+	tunnelMu      sync.Mutex
+}
+
+func (cm *ClusterManager) SaveTunnel(podName string, stopChan chan struct{}) {
+	cm.tunnelMu.Lock()
+	defer cm.tunnelMu.Unlock()
+	if cm.activeTunnels == nil {
+		cm.activeTunnels = make(map[string]chan struct{})
+	}
+	cm.activeTunnels[podName] = stopChan
+}
+
+func (cm *ClusterManager) StopTunnel(podName string) bool {
+	cm.tunnelMu.Lock()
+	defer cm.tunnelMu.Unlock()
+	if stopChan, ok := cm.activeTunnels[podName]; ok {
+		close(stopChan)
+		delete(cm.activeTunnels, podName)
+		return true
+	}
+	return false
 }
 
 type ClusterContext struct {
@@ -153,18 +177,26 @@ func (cm *ClusterManager) GetPodLogs(ctx context.Context, clusterID domain.Clust
 		return "", fmt.Errorf("cluster not found: %s", clusterID)
 	}
 
-	req := clusterCtx.ClientSet.CoreV1().Pods(string(namespace)).GetLogs(string(podName), &v1.PodLogOptions{
-		TailLines: options.TailLines,
-	})
-
-	podLogs, err := req.Do(ctx).Raw()
-	if err != nil {
-		return "", fmt.Errorf("failed to get pod logs: %w", err)
+	logOpts := &v1.PodLogOptions{}
+	if options.TailLines != nil {
+		logOpts.TailLines = options.TailLines
 	}
 
-	return domain.PodLogs(podLogs), nil
-}
+	// use Stream() instead of use Raw()
+	readCloser, err := clusterCtx.ClientSet.CoreV1().Pods(string(namespace)).GetLogs(string(podName), logOpts).Stream(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to open log stream: %w", err)
+	}
+	defer readCloser.Close()
 
+	buf := new(bytes.Buffer)
+	_, err = io.Copy(buf, readCloser)
+	if err != nil {
+		return "", fmt.Errorf("failed to read log stream: %w", err)
+	}
+
+	return domain.PodLogs(buf.String()), nil
+}
 func (cm *ClusterManager) GetPodStatus(ctx context.Context, clusterID domain.ClusterID, namespace domain.Namespace, podName domain.PodName) (*domain.PodStatus, error) {
 	cm.mu.RLock()
 	clusterCtx, exists := cm.clusters[clusterID]
@@ -238,4 +270,20 @@ func (cm *ClusterManager) CloseAll() {
 		delete(cm.clusters, clusterID)
 		cm.logger.Info("Closed cluster connection", "clusterID", clusterID)
 	}
+}
+
+func (cm *ClusterManager) GetRESTConfig(id domain.ClusterID) (*rest.Config, error) {
+	cm.mu.RLock()
+	defer cm.mu.RUnlock()
+
+	ctx, ok := cm.clusters[id]
+	if !ok {
+		return nil, fmt.Errorf("cluster not found: %s", id)
+	}
+
+	if ctx.RestConfig == nil {
+		return nil, fmt.Errorf("rest config is nil for cluster: %s", id)
+	}
+
+	return ctx.RestConfig, nil
 }
