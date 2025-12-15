@@ -8,7 +8,11 @@ The Most Comprehensive Kubernetes MCP Server – Manage your entire Kubernetes e
 
 ---
 
-✨ **Comprehensive Coverage (65+ Tools!)**
+✨ **Comprehensive Coverage (65+ Too
+
+https://github.com/user-attachments/assets/56846b94-7ab7-4a81-9771-9cc67b200c3d
+
+ls!)**
 
 Our project provides a **complete set of Kubernetes management tools**, including advanced workloads, configuration management, observability, and security.
 
