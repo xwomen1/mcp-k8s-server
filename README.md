@@ -7,12 +7,11 @@
 The Most Comprehensive Kubernetes MCP Server – Manage your entire Kubernetes ecosystem through AI assistants like Claude, ChatGPT, and more! 
 
 ---
+## 📺 Live Demo
+![K8s Assistant in action](https://github.com/user-attachments/assets/56846b94-7ab7-4a81-9771-9cc67b200c3d) 
+*AI automatically validating YAML, deploying to 'test' namespace, and opening a tunnel.*
 
-✨ **Comprehensive Coverage (65+ Too
-
-https://github.com/user-attachments/assets/56846b94-7ab7-4a81-9771-9cc67b200c3d
-
-ls!)**
+✨ **Comprehensive Coverage (65+ Tools!)**
 
 Our project provides a **complete set of Kubernetes management tools**, including advanced workloads, configuration management, observability, and security.
 
